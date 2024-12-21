@@ -1,7 +1,7 @@
 const app = require("./app");
-const config = require("./utils/config");
-const logger = require("./utils/logger");
+const connectToDB = require("./utils/db");
+const startServer = require("./utils/startServer");
 
-app.listen(config.PORT, () => {
-  logger.info(`Server running on port ${config.PORT}`);
+connectToDB().then(() => {
+  startServer(app);
 });
