@@ -5,21 +5,18 @@ const supertest = require("supertest");
 const app = require("../app");
 const connectToDB = require("../utils/db");
 const Note = require("../models/note");
+const helper = require("./test_helper");
 
 // connectToTestingDB
 connectToDB();
-const initialNotes = [
-  { content: "HTML is easy", important: true },
-  { content: "CSS is tricky", important: false },
-];
 
 const api = supertest(app);
 
 beforeEach(async () => {
   await Note.deleteMany({});
-  let note = new Note(initialNotes[0]);
+  let note = new Note(helper.initialNotes[0]);
   await note.save();
-  note = new Note(initialNotes[1]);
+  note = new Note(helper.initialNotes[1]);
   await note.save();
 });
 
@@ -32,7 +29,7 @@ test("notes are returned as JSON", async () => {
 
 test("two notes in the DB", async () => {
   const response = await api.get("/api/notes").expect(200);
-  assert.strictEqual(response.body.length, initialNotes.length);
+  assert.strictEqual(response.body.length, helper.initialNotes.length);
 });
 
 test("first note is about HTTP", async () => {
@@ -53,11 +50,19 @@ test("A valid note can be added", async () => {
 
   const response = await api.get("/api/notes");
   const content = response.body.map((n) => n.content);
-  assert.strictEqual(initialNotes.length + 1, response.body.length);
+  assert.strictEqual(helper.initialNotes.length + 1, response.body.length);
   assert.strictEqual(
     content.includes("async/await simplifies making async calls"),
     true
   );
+});
+
+test("no content note cant be created", async () => {
+  const newNote = { important: true };
+  await api.post("/api/notes").send(newNote).expect(400);
+
+  const response = await api.get("/api/notes");
+  assert.strictEqual(helper.initialNotes.length, response.body.length);
 });
 
 after(async () => {
