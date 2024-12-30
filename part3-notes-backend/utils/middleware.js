@@ -14,7 +14,14 @@ const errorHandler = (error, request, response, next) => {
   if (error.name === "CastError") {
     return response.status(400).send({ error: "malformatted id" });
   }
-
+  if (
+    error.name === "MongoServerError" &&
+    error.message.includes("E11000 duplicate key error collection")
+  ) {
+    return response
+      .status(400)
+      .send({ error: "expected `username` to be unique" });
+  }
   next(error);
 };
 

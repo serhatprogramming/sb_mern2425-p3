@@ -35,10 +35,26 @@ describe("when there is initially one user in db", () => {
       .expect("Content-Type", /application\/json/);
 
     const usersAtEnd = await helper.usersInDb();
+    console.log("users after bcauser: ", usersAtEnd);
     assert.strictEqual(usersAtEnd.length, usersAtStart.length + 1);
 
     const usernames = usersAtEnd.map((user) => user.username);
     assert(usernames.includes(newUser.username));
+  });
+  test("should creation with same username fail", async () => {
+    const usersAtStart = await helper.usersInDb();
+
+    console.log(usersAtStart);
+
+    const result = await api
+      .post("/api/users")
+      .send({ username: "root", password: "2224444" })
+      .expect(400)
+      .expect("Content-Type", /application\/json/);
+    const usersAtEnd = await helper.usersInDb();
+    assert(result.body.error.includes("expected `username` to be unique"));
+
+    assert.strictEqual(usersAtEnd.length, usersAtStart.length);
   });
 });
 
