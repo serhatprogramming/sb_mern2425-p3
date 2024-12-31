@@ -25,6 +25,8 @@ const errorHandler = (error, request, response, next) => {
       .send({ error: "expected `username` to be unique" });
   } else if (error.name === "ValidationError") {
     return response.status(400).send({ error: error.message });
+  } else if (error.name === "JsonWebTokenError") {
+    return response.status(401).json({ error: "token invalid" });
   }
   next(error);
 };
