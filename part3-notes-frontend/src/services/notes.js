@@ -7,14 +7,18 @@ const getAll = async () => {
   return response.data;
 };
 
-const create = (newObject) => {
-  const request = axios.post(baseUrl, newObject);
-  return request.then((response) => response.data);
+const create = async (newObject, user) => {
+  const request = axios.post(baseUrl, newObject, {
+    headers: { Authorization: user ? `Bearer ${user.token}` : null },
+  });
+  const response = await request;
+  return response.data;
 };
 
-const update = (id, newObject) => {
+const update = async (id, newObject) => {
   const request = axios.put(`${baseUrl}/${id}`, newObject);
-  return request.then((response) => response.data);
+  const response = await request;
+  return response.data;
 };
 
 export default {

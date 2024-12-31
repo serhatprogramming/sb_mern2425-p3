@@ -28,10 +28,9 @@ const App = () => {
     };
 
     noteService
-      .create(noteObject)
+      .create(noteObject, user)
       .then((returnedNote) => {
         setNotes(notes.concat(returnedNote));
-        setNewNote("");
       })
       .catch((error) => {
         setErrorMessage(`'${error.response.data.error}'`);
@@ -39,6 +38,7 @@ const App = () => {
           setErrorMessage(null);
         }, 5000);
       });
+    setNewNote("");
   };
 
   const toggleImportanceOf = (id) => {
@@ -129,6 +129,7 @@ const App = () => {
           show {showAll ? "important" : "all"}
         </button>
       </div>
+
       <ul>
         {notesToShow.map((note) => (
           <Note
