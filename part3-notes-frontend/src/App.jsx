@@ -10,7 +10,6 @@ import NoteForm from "./components/NoteForm";
 
 const App = () => {
   const [notes, setNotes] = useState([]);
-  const [newNote, setNewNote] = useState("");
   const [showAll, setShowAll] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
   const [username, setUsername] = useState("");
@@ -32,13 +31,7 @@ const App = () => {
     }
   }, []);
 
-  const addNote = (event) => {
-    event.preventDefault();
-    const noteObject = {
-      content: newNote,
-      important: Math.random() > 0.5,
-    };
-
+  const addNote = (noteObject) => {
     noteService
       .create(noteObject, user)
       .then((returnedNote) => {
@@ -50,7 +43,6 @@ const App = () => {
           setErrorMessage(null);
         }, 5000);
       });
-    setNewNote("");
   };
 
   const toggleImportanceOf = (id) => {
@@ -70,10 +62,6 @@ const App = () => {
           setErrorMessage(null);
         }, 5000);
       });
-  };
-
-  const handleNoteChange = (event) => {
-    setNewNote(event.target.value);
   };
 
   const handleLogin = async (event) => {
@@ -122,11 +110,7 @@ const App = () => {
             </button>
           </p>
           <Togglable buttonLabel="Open New Note Form">
-            <NoteForm
-              newNote={newNote}
-              handleNoteChange={handleNoteChange}
-              addNote={addNote}
-            />
+            <NoteForm addNote={addNote} />
           </Togglable>
         </div>
       )}
