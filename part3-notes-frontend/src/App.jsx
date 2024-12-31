@@ -4,6 +4,7 @@ import Notification from "./components/Notification";
 import Footer from "./components/Footer";
 import noteService from "./services/notes";
 import loginService from "./services/login";
+import LoginForm from "./components/LoginForm";
 
 const App = () => {
   const [notes, setNotes] = useState([]);
@@ -96,30 +97,13 @@ const App = () => {
       <h1>Notes</h1>
       <Notification message={errorMessage} />
       {user === null ? (
-        <>
-          <h2>Login</h2>
-          <form onSubmit={handleLogin}>
-            <div>
-              username
-              <input
-                type="text"
-                value={username}
-                name="Username"
-                onChange={({ target }) => setUsername(target.value)}
-              />
-            </div>
-            <div>
-              password
-              <input
-                type="password"
-                value={password}
-                name="Password"
-                onChange={({ target }) => setPassword(target.value)}
-              />
-            </div>
-            <button type="submit">login</button>
-          </form>
-        </>
+        <LoginForm
+          handleLogin={handleLogin}
+          username={username}
+          password={password}
+          setPassword={setPassword}
+          setUsername={setUsername}
+        />
       ) : (
         <div>
           <p>
