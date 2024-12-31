@@ -4,9 +4,13 @@ h1 {
 }
 
 .note {
-  color: grey;
+  color: rgb(167, 3, 3);
   padding-top: 3px;
   font-size: 15px;
+}
+button {
+  padding: 0 10px;
+  margin: 0 10px;
 }
 
 .error {
