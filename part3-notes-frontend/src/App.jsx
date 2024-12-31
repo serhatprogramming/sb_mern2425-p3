@@ -87,7 +87,6 @@ const App = () => {
     }
     setUsername("");
     setPassword("");
-    console.log("logging in with", username, password);
   };
 
   const notesToShow = showAll ? notes : notes.filter((note) => note.important);
@@ -124,8 +123,17 @@ const App = () => {
       ) : (
         <div>
           <p>
-            <strong>{user.name}</strong> logged-in
+            <strong>{user.name}</strong> logged-in{" "}
+            <button
+              onClick={() => {
+                window.localStorage.clear();
+                setUser(null);
+              }}
+            >
+              Log Out
+            </button>
           </p>
+
           <form onSubmit={addNote}>
             <input value={newNote} onChange={handleNoteChange} />
             <button type="submit">save</button>
