@@ -13,6 +13,15 @@ describe("Note app", () => {
     await page.goto("http://localhost:5173");
   });
 
+  test("should not login with wrong creds", async ({ page }) => {
+    await page.getByRole("button", { name: "Open Log In Form" }).click();
+    await page.getByTestId("username").fill("root");
+    await page.getByTestId("password").fill("wrong_password");
+    await page.getByRole("button", { name: "login" }).click();
+    await expect(page.getByText("Wrong Credentials")).toBeVisible();
+    await expect(page.getByRole("button", { name: "login" })).toBeVisible();
+  });
+
   describe("Should open and login", () => {
     test("should front page can be opened", async ({ page }) => {
       const locator = await page.getByText("Notes");
@@ -49,6 +58,19 @@ describe("Note app", () => {
       await expect(
         page.getByText("a note created by playwright")
       ).toBeVisible();
+    });
+
+    describe("and a note exists", () => {
+      beforeEach(async ({ page }) => {
+        await page.getByRole("button", { name: "Open New Note Form" }).click();
+        await page.getByRole("textbox").fill("another note by playwright");
+        await page.getByRole("button", { name: "save" }).click();
+      });
+
+      test("should importance be changed", async ({ page }) => {
+        await page.getByRole("button", { name: "make not important" }).click();
+        await expect(page.getByText("make important")).toBeVisible();
+      });
     });
   });
 });
