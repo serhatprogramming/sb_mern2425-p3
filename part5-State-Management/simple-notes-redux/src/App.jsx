@@ -1,15 +1,10 @@
-import { createNote, toggleImportanceOf } from "./reducers/noteReducer";
+import { toggleImportanceOf } from "./reducers/noteReducer";
 import { useSelector, useDispatch } from "react-redux";
+import NewNote from "./components/NewNote";
 
 const App = () => {
   const dispatch = useDispatch();
   const notes = useSelector((state) => state);
-  const addNote = (event) => {
-    event.preventDefault();
-    console.log(event.target.note.value);
-    dispatch(createNote(event.target.note.value));
-    event.target.note.value = "";
-  };
 
   const changeImportance = (id) => {
     dispatch(toggleImportanceOf(id));
@@ -26,10 +21,7 @@ const App = () => {
   return (
     <div>
       <h2>Simple Notes App with Redux</h2>
-      <form onSubmit={addNote}>
-        <input name="note" />
-        <button type="submit">add new note</button>
-      </form>
+      <NewNote />
       <ul>
         {notes.map((note) => (
           <li key={note.id}>
