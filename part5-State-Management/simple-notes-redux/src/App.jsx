@@ -1,66 +1,19 @@
-import { createStore } from "redux";
-
-const generateId = () => Number((Math.random() * 1000000).toFixed(0));
-
-const noteReducer = (state = [], action) => {
-  switch (action.type) {
-    case "NEW_NOTE": {
-      return state.concat(action.payload);
-    }
-    case "TOGGLE_IMPORTANCE": {
-      return state.map((note) =>
-        note.id === action.payload.id
-          ? { ...note, important: !note.important }
-          : note
-      );
-    }
-    default: {
-      return state;
-    }
-  }
-};
-
-const store = createStore(noteReducer);
-
-store.dispatch({
-  type: "NEW_NOTE",
-  payload: {
-    content: "the app stats is in redux store",
-    important: true,
-    id: 1,
-  },
-});
-store.dispatch({
-  type: "NEW_NOTE",
-  payload: {
-    content: "state changes are made with actions",
-    important: false,
-    id: 2,
-  },
-});
-
-store.dispatch({
-  type: "TOGGLE_IMPORTANCE",
-  payload: { id: 1 },
-});
+import { createNote, toggleImportanceOf } from "./reducers/noteReducer";
+import { useSelector, useDispatch } from "react-redux";
 
 const App = () => {
+  const dispatch = useDispatch();
+  const notes = useSelector((state) => state);
   const addNote = (event) => {
     event.preventDefault();
     console.log(event.target.note.value);
-    store.dispatch({
-      type: "NEW_NOTE",
-      payload: {
-        content: event.target.note.value,
-        important: false,
-        id: generateId(),
-      },
-    });
+    dispatch(createNote(event.target.note.value));
     event.target.note.value = "";
   };
 
-  const changeImportance = () => {
-    console.log("Changing importance of the note");
+  const changeImportance = (id) => {
+    dispatch(toggleImportanceOf(id));
+    console.log("Changing importance of the note with id: ", id);
   };
 
   const clickableItemStyle = {
@@ -78,7 +31,7 @@ const App = () => {
         <button type="submit">add new note</button>
       </form>
       <ul>
-        {store.getState().map((note) => (
+        {notes.map((note) => (
           <li key={note.id}>
             {note.content}
             <span
@@ -93,5 +46,4 @@ const App = () => {
     </div>
   );
 };
-
 export default App;
