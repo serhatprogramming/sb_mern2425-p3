@@ -23,49 +23,40 @@ const noteReducer = (state = [], action) => {
 
 const store = createStore(noteReducer);
 
-store.dispatch({
-  type: "NEW_NOTE",
-  payload: {
-    content: "the app stats is in redux store",
-    important: true,
-    id: 1,
-  },
-});
-store.dispatch({
-  type: "NEW_NOTE",
-  payload: {
-    content: "state changes are made with actions",
-    important: false,
-    id: 2,
-  },
-});
+const createNote = (content) => {
+  return {
+    type: "NEW_NOTE",
+    payload: {
+      content: content,
+      important: false,
+      id: generateId(),
+    },
+  };
+};
 
-store.dispatch({
-  type: "TOGGLE_IMPORTANCE",
-  payload: { id: 1 },
-});
+const toggleImportanceOf = (id) => {
+  return {
+    type: "TOGGLE_IMPORTANCE",
+    payload: { id },
+  };
+};
+
+store.dispatch(createNote("the app stats is in redux store"));
+store.dispatch(createNote("state changes are made with actions"));
+
+store.dispatch(toggleImportanceOf(store.getState()[0].id));
 
 const App = () => {
   const addNote = (event) => {
     event.preventDefault();
     console.log(event.target.note.value);
-    store.dispatch({
-      type: "NEW_NOTE",
-      payload: {
-        content: event.target.note.value,
-        important: false,
-        id: generateId(),
-      },
-    });
+    store.dispatch(createNote(event.target.note.value));
     event.target.note.value = "";
   };
 
   const changeImportance = (id) => {
-    store.dispatch({
-      type: "TOGGLE_IMPORTANCE",
-      payload: { id },
-    });
-    console.log("Changing importance of the note");
+    store.dispatch(toggleImportanceOf(id));
+    console.log("Changing importance of the note with id: ", id);
   };
 
   const clickableItemStyle = {
